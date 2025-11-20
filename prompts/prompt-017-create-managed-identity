@@ -1,0 +1,3 @@
+Create a user assigned managed identity called mid-AppModAssist-[Day-Hour-Minute] (replacing [Day-Hour-Minute] with actual day, month, minute)
+and assign it to this app service so it can later connect to Azure SQL with this identity.
+bear in mind that when using a user-assigned managed identity, the principalId property is not directly on the identity object so avoid trying output it
