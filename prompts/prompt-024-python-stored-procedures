@@ -9,6 +9,8 @@ update the app code if needed to achieve that.
 
 make sure to use "CREATE OR ALTER PROCEDURE" in case the stored procedires already exist.
 
+make sure the app code does not call any stored procedure names that do not exist in the stored-procedures.sql file.
+
 changing the server and database variables at the top to those created earlier in the process.
 If you were not asked to create them then leave them as is.
 
