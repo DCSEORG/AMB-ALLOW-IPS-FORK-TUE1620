@@ -20,7 +20,7 @@ Check type availability - If Bicep warns that a resource type "does not have typ
 
 Also make sure to only use uniquestring() or uniqueString(resourceGroup().id) to create names for resources to deploy to azure and do not use md5sum ever.
 
-Also make sure to include code in both the deploy.sh and deploy-with-chat.sh to add current IP to SQL Firewall and Allow Azure services access to SQL Server, here is example code:
+Also make sure to include code in both the deploy.sh and deploy-with-chat.sh to add current IP to SQL Firewall and Allow Azure services access to SQL Server (if the script is run from Codespaces/ Azure container for example), here is example code:
 
 # Add current IP to SQL firewall
 echo "Adding current IP to SQL firewall..."
