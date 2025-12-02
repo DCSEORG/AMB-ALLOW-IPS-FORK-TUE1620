@@ -1,0 +1,41 @@
+# Build output
+bin/
+obj/
+publish/
+
+# IDE
+.vs/
+.vscode/
+*.user
+*.suo
+
+# User-specific files
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# NuGet
+*.nupkg
+**/[Pp]ackages/*
+!**/[Pp]ackages/build/
+
+# Rider
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+
+# Keep app.zip for deployment
+!app.zip

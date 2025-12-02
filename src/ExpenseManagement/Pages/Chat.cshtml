@@ -1,0 +1,196 @@
+@page
+@model ExpenseManagement.Pages.ChatModel
+@{
+    ViewData["Title"] = "AI Assistant";
+}
+
+<div class="container">
+    <header class="header">
+        <h1>💼 Expense Management System</h1>
+        <p class="subtitle">Track, submit, and manage your expenses</p>
+    </header>
+
+    <nav class="nav-tabs">
+        <a href="/Index" class="nav-tab">📋 My Expenses</a>
+        <a href="/AddExpense" class="nav-tab">➕ Add Expense</a>
+        <a href="/Approve" class="nav-tab">✅ Approve Expenses</a>
+        <a href="/Chat" class="nav-tab active">💬 AI Assistant</a>
+    </nav>
+
+    <div class="content-card chat-container">
+        <div class="card-header">
+            <h2>💬 AI Assistant</h2>
+            <p class="card-subtitle">Ask me anything about your expenses!</p>
+        </div>
+
+        <div id="chat-messages" class="chat-messages">
+            <div class="chat-message assistant">
+                <div class="message-bubble">
+                    Hello! I'm your Expense Management AI assistant. I can help you:
+                    <ul>
+                        <li>View and search your expenses</li>
+                        <li>Create new expense claims</li>
+                        <li>Check pending approvals</li>
+                        <li>Answer questions about expense policies</li>
+                    </ul>
+                    How can I help you today?
+                </div>
+            </div>
+        </div>
+
+        <div class="chat-input-container">
+            <form id="chat-form" class="chat-form">
+                <input type="text" id="chat-input" class="chat-input" 
+                       placeholder="Type your message..." autocomplete="off" />
+                <button type="submit" class="btn btn-primary" id="send-btn">Send</button>
+            </form>
+        </div>
+
+        <div id="chat-status" class="chat-status"></div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        const chatMessages = document.getElementById('chat-messages');
+        const chatForm = document.getElementById('chat-form');
+        const chatInput = document.getElementById('chat-input');
+        const sendBtn = document.getElementById('send-btn');
+        const chatStatus = document.getElementById('chat-status');
+        
+        let conversationHistory = [];
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function formatMessage(text) {
+            // First escape HTML
+            let formatted = escapeHtml(text);
+            
+            // Convert markdown-style formatting
+            // Bold
+            formatted = formatted.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+            
+            // Handle numbered lists
+            const lines = formatted.split('\n');
+            let inOrderedList = false;
+            let inUnorderedList = false;
+            let result = [];
+            
+            for (let line of lines) {
+                const trimmed = line.trim();
+                
+                // Check for numbered list item
+                if (/^\d+\.\s/.test(trimmed)) {
+                    if (!inOrderedList) {
+                        if (inUnorderedList) {
+                            result.push('</ul>');
+                            inUnorderedList = false;
+                        }
+                        result.push('<ol>');
+                        inOrderedList = true;
+                    }
+                    result.push('<li>' + trimmed.replace(/^\d+\.\s/, '') + '</li>');
+                }
+                // Check for bullet list item
+                else if (/^[-*]\s/.test(trimmed)) {
+                    if (!inUnorderedList) {
+                        if (inOrderedList) {
+                            result.push('</ol>');
+                            inOrderedList = false;
+                        }
+                        result.push('<ul>');
+                        inUnorderedList = true;
+                    }
+                    result.push('<li>' + trimmed.replace(/^[-*]\s/, '') + '</li>');
+                }
+                else {
+                    if (inOrderedList) {
+                        result.push('</ol>');
+                        inOrderedList = false;
+                    }
+                    if (inUnorderedList) {
+                        result.push('</ul>');
+                        inUnorderedList = false;
+                    }
+                    result.push(line);
+                }
+            }
+            
+            if (inOrderedList) result.push('</ol>');
+            if (inUnorderedList) result.push('</ul>');
+            
+            formatted = result.join('\n');
+            
+            // Convert line breaks to <br>
+            formatted = formatted.replace(/\n/g, '<br>');
+            
+            return formatted;
+        }
+
+        function addMessage(role, content) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `chat-message ${role}`;
+            
+            const bubble = document.createElement('div');
+            bubble.className = 'message-bubble';
+            bubble.innerHTML = formatMessage(content);
+            
+            messageDiv.appendChild(bubble);
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function setLoading(loading) {
+            sendBtn.disabled = loading;
+            chatInput.disabled = loading;
+            chatStatus.textContent = loading ? 'Thinking...' : '';
+        }
+
+        chatForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const message = chatInput.value.trim();
+            if (!message) return;
+            
+            // Add user message
+            addMessage('user', message);
+            conversationHistory.push({ role: 'user', content: message });
+            chatInput.value = '';
+            
+            setLoading(true);
+            
+            try {
+                const response = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        message: message,
+                        history: conversationHistory.slice(0, -1) // Exclude the message we just added
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    addMessage('assistant', data.message);
+                    conversationHistory.push({ role: 'assistant', content: data.message });
+                } else {
+                    addMessage('assistant', `Error: ${data.error || 'Unknown error occurred'}`);
+                }
+            } catch (error) {
+                addMessage('assistant', `Error: Failed to send message. ${error.message}`);
+            } finally {
+                setLoading(false);
+            }
+        });
+
+        // Focus input on load
+        chatInput.focus();
+    </script>
+}

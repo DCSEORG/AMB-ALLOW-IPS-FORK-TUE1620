@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expense Management - AI Chat</title>
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --bg-color: #f8fafc;
+            --text-color: #1e293b;
+        }
+        
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 1rem;
+            padding: 2rem;
+            max-width: 600px;
+            text-align: center;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            color: var(--primary-color);
+        }
+        
+        .info-box {
+            background: #dbeafe;
+            border: 1px solid #93c5fd;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin: 1rem 0;
+            color: #1e40af;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            background: var(--primary-color);
+            color: white;
+            text-decoration: none;
+            border-radius: 0.5rem;
+            margin-top: 1rem;
+        }
+        
+        .btn:hover {
+            background: #3730a3;
+        }
+        
+        code {
+            background: #f1f5f9;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>💬 AI Chat Assistant</h1>
+        <p>The AI Chat feature is integrated into the main application.</p>
+        
+        <div class="info-box">
+            <strong>ℹ️ Note:</strong> The chat UI is part of the Expense Management System. 
+            If GenAI resources are not deployed, the chat will provide helpful guidance on 
+            how to enable the AI features.
+        </div>
+        
+        <p>To enable AI chat functionality:</p>
+        <ol style="text-align: left;">
+            <li>Run <code>./deploy-with-chat.sh</code> to deploy Azure OpenAI resources</li>
+            <li>The script will configure the App Service with the required settings</li>
+            <li>Navigate to <code>/Chat</code> in the application</li>
+        </ol>
+        
+        <a href="/Chat" class="btn">Go to Chat UI</a>
+    </div>
+</body>
+</html>

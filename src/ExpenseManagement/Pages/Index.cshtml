@@ -1,0 +1,110 @@
+@page
+@model ExpenseManagement.Pages.IndexModel
+@{
+    ViewData["Title"] = "Expense Management";
+}
+
+@if (Model.ErrorInfo != null)
+{
+    <div class="error-banner">
+        <div class="error-content">
+            <strong>⚠️ @Model.ErrorInfo.Message</strong>
+            @if (!string.IsNullOrEmpty(Model.ErrorInfo.FileName))
+            {
+                <span class="error-location">File: @Model.ErrorInfo.FileName, Line: @Model.ErrorInfo.LineNumber</span>
+            }
+            @if (!string.IsNullOrEmpty(Model.ErrorInfo.DetailedMessage))
+            {
+                <p class="error-detail">@Model.ErrorInfo.DetailedMessage</p>
+            }
+        </div>
+    </div>
+}
+
+@if (Model.UseDummyData)
+{
+    <div class="info-banner">
+        <strong>ℹ️ Demo Mode:</strong> Displaying sample data. Database connection unavailable.
+    </div>
+}
+
+<div class="container">
+    <header class="header">
+        <h1>💼 Expense Management System</h1>
+        <p class="subtitle">Track, submit, and manage your expenses</p>
+    </header>
+
+    <nav class="nav-tabs">
+        <a href="/Index" class="nav-tab active">📋 My Expenses</a>
+        <a href="/AddExpense" class="nav-tab">➕ Add Expense</a>
+        <a href="/Approve" class="nav-tab">✅ Approve Expenses</a>
+        <a href="/Chat" class="nav-tab">💬 AI Assistant</a>
+    </nav>
+
+    <div class="content-card">
+        <div class="card-header">
+            <h2>My Expenses</h2>
+            <div class="filters">
+                <form method="get" class="filter-form">
+                    <input type="text" name="search" value="@Model.SearchText" placeholder="Search..." class="filter-input" />
+                    <select name="category" class="filter-select">
+                        <option value="">All Categories</option>
+                        @foreach (var cat in Model.Categories)
+                        {
+                            <option value="@cat.CategoryName" selected="@(Model.CategoryFilter == cat.CategoryName)">@cat.CategoryName</option>
+                        }
+                    </select>
+                    <select name="status" class="filter-select">
+                        <option value="">All Statuses</option>
+                        @foreach (var stat in Model.Statuses)
+                        {
+                            <option value="@stat.StatusName" selected="@(Model.StatusFilter == stat.StatusName)">@stat.StatusName</option>
+                        }
+                    </select>
+                    <button type="submit" class="btn btn-primary">Filter</button>
+                </form>
+            </div>
+        </div>
+
+        <table class="expense-table">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Category</th>
+                    <th>Amount</th>
+                    <th>Status</th>
+                    <th>Description</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var expense in Model.Expenses)
+                {
+                    <tr>
+                        <td>@expense.ExpenseDate.ToString("dd/MM/yyyy")</td>
+                        <td><span class="category-badge">@expense.CategoryName</span></td>
+                        <td class="amount">@expense.FormattedAmount</td>
+                        <td><span class="status-badge status-@expense.StatusName?.ToLower()">@expense.StatusName</span></td>
+                        <td>@expense.Description</td>
+                        <td>
+                            @if (expense.StatusName == "Draft")
+                            {
+                                <form method="post" asp-page-handler="Submit" style="display:inline;">
+                                    <input type="hidden" name="expenseId" value="@expense.ExpenseId" />
+                                    <button type="submit" class="btn btn-small btn-success">Submit</button>
+                                </form>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        @if (!Model.Expenses.Any())
+        {
+            <div class="empty-state">
+                <p>No expenses found. <a href="/AddExpense">Create your first expense</a>.</p>
+            </div>
+        }
+    </div>
+</div>
