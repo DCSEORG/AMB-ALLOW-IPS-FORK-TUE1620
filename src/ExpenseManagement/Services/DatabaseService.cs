@@ -47,26 +47,18 @@ public class DatabaseService : IDatabaseService
         catch (SqlException ex)
         {
             _isConnected = false;
-            _lastError = new ErrorInfo
-            {
-                Message = "Database connection failed",
-                FileName = "DatabaseService.cs",
-                LineNumber = 45,
-                DetailedMessage = GetDetailedSqlErrorMessage(ex)
-            };
+            _lastError = ErrorInfo.Create(
+                "Database connection failed",
+                GetDetailedSqlErrorMessage(ex));
             _logger.LogError(ex, "Failed to connect to database");
             throw;
         }
         catch (Exception ex)
         {
             _isConnected = false;
-            _lastError = new ErrorInfo
-            {
-                Message = "Unexpected error connecting to database",
-                FileName = "DatabaseService.cs",
-                LineNumber = 55,
-                DetailedMessage = ex.Message
-            };
+            _lastError = ErrorInfo.Create(
+                "Unexpected error connecting to database",
+                ex.Message);
             _logger.LogError(ex, "Unexpected error connecting to database");
             throw;
         }

@@ -77,13 +77,9 @@ public class AddExpenseModel : PageModel
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error creating expense");
-            ErrorInfo = new ErrorInfo
-            {
-                Message = "Failed to create expense",
-                FileName = "AddExpense.cshtml.cs",
-                LineNumber = 72,
-                DetailedMessage = ex.Message
-            };
+            ErrorInfo = ErrorInfo.Create(
+                "Failed to create expense",
+                ex.Message);
             return Page();
         }
     }

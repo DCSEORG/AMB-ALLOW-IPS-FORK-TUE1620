@@ -68,13 +68,9 @@ public class ExpenseService : IExpenseService
         {
             _logger.LogError(ex, "Error getting expenses, returning dummy data");
             _useDummyData = true;
-            _lastError = new ErrorInfo
-            {
-                Message = "Failed to retrieve expenses from database",
-                FileName = "ExpenseService.cs",
-                LineNumber = 55,
-                DetailedMessage = ex.Message
-            };
+            _lastError = ErrorInfo.Create(
+                "Failed to retrieve expenses from database",
+                ex.Message);
             return GetDummyExpenses();
         }
     }
@@ -103,13 +99,9 @@ public class ExpenseService : IExpenseService
         {
             _logger.LogError(ex, "Error getting pending expenses, returning dummy data");
             _useDummyData = true;
-            _lastError = new ErrorInfo
-            {
-                Message = "Failed to retrieve pending expenses",
-                FileName = "ExpenseService.cs",
-                LineNumber = 95,
-                DetailedMessage = ex.Message
-            };
+            _lastError = ErrorInfo.Create(
+                "Failed to retrieve pending expenses",
+                ex.Message);
             return GetDummyExpenses().Where(e => e.StatusName == "Submitted").ToList();
         }
     }
@@ -135,13 +127,9 @@ public class ExpenseService : IExpenseService
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error getting expense by ID");
-            _lastError = new ErrorInfo
-            {
-                Message = "Failed to retrieve expense",
-                FileName = "ExpenseService.cs",
-                LineNumber = 125,
-                DetailedMessage = ex.Message
-            };
+            _lastError = ErrorInfo.Create(
+                "Failed to retrieve expense",
+                ex.Message);
             return GetDummyExpenses().FirstOrDefault(e => e.ExpenseId == expenseId);
         }
     }
@@ -260,13 +248,9 @@ public class ExpenseService : IExpenseService
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error creating expense");
-            _lastError = new ErrorInfo
-            {
-                Message = "Failed to create expense",
-                FileName = "ExpenseService.cs",
-                LineNumber = 250,
-                DetailedMessage = ex.Message
-            };
+            _lastError = ErrorInfo.Create(
+                "Failed to create expense",
+                ex.Message);
             throw;
         }
     }
@@ -288,13 +272,9 @@ public class ExpenseService : IExpenseService
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error submitting expense");
-            _lastError = new ErrorInfo
-            {
-                Message = "Failed to submit expense",
-                FileName = "ExpenseService.cs",
-                LineNumber = 275,
-                DetailedMessage = ex.Message
-            };
+            _lastError = ErrorInfo.Create(
+                "Failed to submit expense",
+                ex.Message);
             return false;
         }
     }
@@ -317,13 +297,9 @@ public class ExpenseService : IExpenseService
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error approving expense");
-            _lastError = new ErrorInfo
-            {
-                Message = "Failed to approve expense",
-                FileName = "ExpenseService.cs",
-                LineNumber = 300,
-                DetailedMessage = ex.Message
-            };
+            _lastError = ErrorInfo.Create(
+                "Failed to approve expense",
+                ex.Message);
             return false;
         }
     }
@@ -346,13 +322,9 @@ public class ExpenseService : IExpenseService
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error rejecting expense");
-            _lastError = new ErrorInfo
-            {
-                Message = "Failed to reject expense",
-                FileName = "ExpenseService.cs",
-                LineNumber = 325,
-                DetailedMessage = ex.Message
-            };
+            _lastError = ErrorInfo.Create(
+                "Failed to reject expense",
+                ex.Message);
             return false;
         }
     }

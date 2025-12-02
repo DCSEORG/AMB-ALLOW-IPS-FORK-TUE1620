@@ -87,6 +87,21 @@ public class ErrorInfo
     public string? FileName { get; set; }
     public int? LineNumber { get; set; }
     public string? DetailedMessage { get; set; }
+    
+    public static ErrorInfo Create(
+        string message,
+        string? detailedMessage = null,
+        [System.Runtime.CompilerServices.CallerFilePath] string? filePath = null,
+        [System.Runtime.CompilerServices.CallerLineNumber] int lineNumber = 0)
+    {
+        return new ErrorInfo
+        {
+            Message = message,
+            DetailedMessage = detailedMessage,
+            FileName = System.IO.Path.GetFileName(filePath),
+            LineNumber = lineNumber
+        };
+    }
 }
 
 public class ChatMessage
